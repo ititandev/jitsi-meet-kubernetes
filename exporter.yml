@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  exporter:
+    image: registry.vngcloud.vn/marketplace/jitsi-exporter:v0.0.4
+    restart: ${RESTART_POLICY}
+    ports:
+      - '8080:8080'
+    environment:
+      - XMPP_USER=${EXPORTER_XMPP_USER}
+      - XMPP_PW=${EXPORTER_XMPP_PASSWORD}
+      - XMPP_AUTH_DOMAIN
+      - XMPP_SERVER
+      - XMPP_PORT=5222
+      - JVB_BREWERY_MUC=jvbbrewery
+      - XMPP_INTERNAL_MUC_DOMAIN=internal-muc.meet.jitsi
+    networks:
+        meet.jitsi:

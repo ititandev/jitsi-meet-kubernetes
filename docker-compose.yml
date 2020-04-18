@@ -1,0 +1,226 @@
+networks:
+  meet.jitsi: null
+services:
+  jicofo:
+    container_name: jicofo
+    depends_on:
+    - prosody
+    environment:
+    - ENABLE_AUTH
+    - XMPP_DOMAIN=meet.jitsi
+    - XMPP_AUTH_DOMAIN=auth.meet.jitsi
+    - XMPP_INTERNAL_MUC_DOMAIN=internal-muc.meet.jitsi
+    - XMPP_SERVER=xmpp.meet.jitsi
+    - JICOFO_COMPONENT_SECRET=d0806903cc6da83875e1266ec0a53ecc
+    - JICOFO_AUTH_USER=focus
+    - JICOFO_AUTH_PASSWORD=10460d2b9e5dc103659c132c5a522411
+    - JICOFO_RESERVATION_REST_BASE_URL
+    - JVB_BREWERY_MUC=jvbbrewery
+    - JIGASI_BREWERY_MUC=jigasibrewery
+    - JIGASI_SIP_URI
+    - JIBRI_BREWERY_MUC=jibribrewery
+    - JIBRI_PENDING_TIMEOUT=90
+    - TZ=Asia/Ho_Chi_Minh
+    image: registry.vngcloud.vn/marketplace/jitsi-jicofo:4384
+    networks:
+      meet.jitsi: null
+    volumes:
+    - jitsi_jicofo:/config
+  jvb:
+    container_name: jvb
+    depends_on:
+    - prosody
+    environment:
+    - DOCKER_HOST_ADDRESS=10.4.105.4
+    - XMPP_AUTH_DOMAIN=auth.meet.jitsi
+    - XMPP_INTERNAL_MUC_DOMAIN=internal-muc.meet.jitsi
+    - XMPP_SERVER=xmpp.meet.jitsi
+    - JVB_AUTH_USER=jvb
+    - JVB_AUTH_PASSWORD=93ba191e8642e70d9c2cb87ec5ebeeca
+    - JVB_BREWERY_MUC=jvbbrewery
+    - JVB_PORT=10000
+    - JVB_TCP_HARVESTER_DISABLED=true
+    - JVB_TCP_PORT=4443
+    - JVB_STUN_SERVERS=meet-jit-si-turnrelay.jitsi.net:443
+    - JVB_ENABLE_APIS
+    - TZ=Asia/Ho_Chi_Minh
+    image: registry.vngcloud.vn/marketplace/jitsi-jvb:4384
+    networks:
+      meet.jitsi: null
+    ports:
+    - 10000:10000/udp
+    - 4443:4443
+    volumes:
+    - jitsi_jvb:/config
+  prosody:
+    container_name: prosody
+    environment:
+    - AUTH_TYPE
+    - ENABLE_AUTH
+    - ENABLE_GUESTS
+    - GLOBAL_MODULES
+    - GLOBAL_CONFIG
+    - LDAP_URL
+    - LDAP_BASE
+    - LDAP_BINDDN
+    - LDAP_BINDPW
+    - LDAP_FILTER
+    - LDAP_AUTH_METHOD
+    - LDAP_VERSION
+    - LDAP_USE_TLS
+    - LDAP_TLS_CIPHERS
+    - LDAP_TLS_CHECK_PEER
+    - LDAP_TLS_CACERT_FILE
+    - LDAP_TLS_CACERT_DIR
+    - LDAP_START_TLS
+    - XMPP_DOMAIN=meet.jitsi
+    - XMPP_AUTH_DOMAIN=auth.meet.jitsi
+    - XMPP_GUEST_DOMAIN=guest.meet.jitsi
+    - XMPP_MUC_DOMAIN=muc.meet.jitsi
+    - XMPP_INTERNAL_MUC_DOMAIN=internal-muc.meet.jitsi
+    - XMPP_MODULES
+    - XMPP_MUC_MODULES
+    - XMPP_INTERNAL_MUC_MODULES
+    - XMPP_RECORDER_DOMAIN=recorder.meet.jitsi
+    - JICOFO_COMPONENT_SECRET=d0806903cc6da83875e1266ec0a53ecc
+    - JICOFO_AUTH_USER=focus
+    - JICOFO_AUTH_PASSWORD=10460d2b9e5dc103659c132c5a522411
+    - JVB_AUTH_USER=jvb
+    - JVB_AUTH_PASSWORD=93ba191e8642e70d9c2cb87ec5ebeeca
+    - JIGASI_XMPP_USER=jigasi
+    - JIGASI_XMPP_PASSWORD=3d0d2fe90d99d2585bc90244406a99bb
+    - JIBRI_XMPP_USER=jibri
+    - JIBRI_XMPP_PASSWORD=1e7196586e9eebddb48311ed7e99375a
+    - JIBRI_RECORDER_USER=recorder
+    - JIBRI_RECORDER_PASSWORD=dd675c7d070d31ce0b2e2772c8a74b3e
+    - JWT_APP_ID
+    - JWT_APP_SECRET
+    - JWT_ACCEPTED_ISSUERS
+    - JWT_ACCEPTED_AUDIENCES
+    - JWT_ASAP_KEYSERVER
+    - JWT_ALLOW_EMPTY
+    - JWT_AUTH_TYPE
+    - JWT_TOKEN_AUTH_MODULE
+    - LOG_LEVEL
+    - TZ=Asia/Ho_Chi_Minh
+    expose:
+    - '5222'
+    - '5347'
+    - '5280'
+    image: registry.vngcloud.vn/marketplace/jitsi-prosody:4384
+    networks:
+      meet.jitsi:
+        aliases:
+        - xmpp.meet.jitsi
+    volumes:
+    - jitsi_prosody:/config
+  web:
+    container_name: web
+    environment:
+    - ENABLE_AUTH
+    - ENABLE_GUESTS
+    - ENABLE_LETSENCRYPT
+    - ENABLE_HTTP_REDIRECT=1
+    - ENABLE_TRANSCRIPTIONS
+    - DISABLE_HTTPS
+    - JICOFO_AUTH_USER=focus
+    - LETSENCRYPT_DOMAIN
+    - LETSENCRYPT_EMAIL
+    - PUBLIC_URL
+    - XMPP_DOMAIN=meet.jitsi
+    - XMPP_AUTH_DOMAIN=auth.meet.jitsi
+    - XMPP_BOSH_URL_BASE=http://xmpp.meet.jitsi:5280
+    - XMPP_GUEST_DOMAIN=guest.meet.jitsi
+    - XMPP_MUC_DOMAIN=muc.meet.jitsi
+    - XMPP_RECORDER_DOMAIN=recorder.meet.jitsi
+    - ETHERPAD_URL_BASE
+    - TZ=Asia/Ho_Chi_Minh
+    - JIBRI_BREWERY_MUC=jibribrewery
+    - JIBRI_PENDING_TIMEOUT=90
+    - JIBRI_XMPP_USER=jibri
+    - JIBRI_XMPP_PASSWORD=1e7196586e9eebddb48311ed7e99375a
+    - JIBRI_RECORDER_USER=recorder
+    - JIBRI_RECORDER_PASSWORD=dd675c7d070d31ce0b2e2772c8a74b3e
+    - ENABLE_RECORDING=1
+    image: registry.vngcloud.vn/marketplace/jitsi-web:4384
+    networks:
+      meet.jitsi:
+        aliases:
+        - meet.jitsi
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - jitsi_web:/config
+    - jitsi_letsencrypt:/etc/letsencrypt
+    - jitsi_transcripts:/usr/share/jitsi-meet/transcripts
+  jibri:
+    container_name: jibri
+    image: registry.vngcloud.vn/marketplace/jitsi-jibri:4384
+    volumes:
+        - jitsi_jibri:/config
+        - /dev/shm:/dev/shm
+    cap_add:
+        - SYS_ADMIN
+        - NET_BIND_SERVICE
+    devices:
+        - /dev/snd:/dev/snd
+    environment:
+        - XMPP_AUTH_DOMAIN=auth.meet.jitsi
+        - XMPP_INTERNAL_MUC_DOMAIN=internal-muc.meet.jitsi
+        - XMPP_RECORDER_DOMAIN=recorder.meet.jitsi
+        - XMPP_SERVER=xmpp.meet.jitsi
+        - XMPP_DOMAIN=meet.jitsi
+        - JIBRI_XMPP_USER=jibri
+        - JIBRI_XMPP_PASSWORD=1e7196586e9eebddb48311ed7e99375a
+        - JIBRI_BREWERY_MUC=jibribrewery
+        - JIBRI_RECORDER_USER=recorder
+        - JIBRI_RECORDER_PASSWORD=dd675c7d070d31ce0b2e2772c8a74b3e
+        - JIBRI_RECORDING_DIR=/config/recordings
+        - JIBRI_FINALIZE_RECORDING_SCRIPT_PATH=/config/finalize.sh
+        - JIBRI_STRIP_DOMAIN_JID=muc
+        - JIBRI_LOGS_DIR=/config/logs
+        - DISPLAY=:0
+        - TZ=Asia/Ho_Chi_Minh
+    depends_on:
+        - jicofo
+    networks:
+      meet.jitsi:
+        aliases:
+        - xmpp.meet.jitsi
+
+  exporter:
+    container_name: exporter
+    image: registry.vngcloud.vn/marketplace/jitsi-exporter:v0.0.4
+    restart: always
+    ports:
+      - '8080:8080'
+    environment:
+      - XMPP_USER=exporter
+      - XMPP_PW=f3f3c8f8927eca945d59dc
+      - XMPP_AUTH_DOMAIN=auth.meet.jitsi
+      - XMPP_SERVER=xmpp.meet.jitsi
+      - XMPP_PORT=5222
+      - JVB_BREWERY_MUC=jvbbrewery
+      - XMPP_INTERNAL_MUC_DOMAIN=internal-muc.meet.jitsi
+    depends_on:
+      - jicofo
+    networks:
+        meet.jitsi: null
+
+version: '3'
+volumes:
+  jitsi_jicofo:
+    driver: local
+  jitsi_jvb:
+    driver: local
+  jitsi_letsencrypt:
+    driver: local
+  jitsi_prosody:
+    driver: local
+  jitsi_transcripts:
+    driver: local
+  jitsi_web:
+    driver: local
+  jitsi_jibri:
+    driver: local
