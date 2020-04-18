@@ -26,6 +26,13 @@ JIBRI_RECORDER_PASSWORD=f3c35c4a8839c9adc9b49bcb966edb14
 JIBRI_XMPP_PASSWORD=7d8db60b196c2211a0c9be48417a6741
 
 
+
+# Exporter config 
+
+XMPP_USER=exporter
+
+XMPP_PW=f3f3c8f892745d59dc
+
 #
 # Basic configuration options
 #
@@ -276,7 +283,7 @@ JIGASI_PORT_MAX=20050
 #GC_CLIENT_CERT_URL=
 
 # Enable recording
-#ENABLE_RECORDING=1
+ENABLE_RECORDING=1
 
 # XMPP domain for the jibri recorder
 XMPP_RECORDER_DOMAIN=recorder.meet.jitsi

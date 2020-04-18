@@ -40,6 +40,11 @@ spec:
           volumeMounts:
           - mountPath: /config
             name: prosody
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash", "-c", "prosodyctl --config=/config/prosody.cfg.lua register $XMPP_USER $XMPP_AUTH_DOMAIN $XMPP_PW || echo FAIL_CREATE_USER_EXPORTER"]
+
         - name: jicofo
           image: registry.vngcloud.vn/marketplace/jitsi-jicofo:4384
           envFrom:
@@ -48,6 +53,7 @@ spec:
           volumeMounts:
           - mountPath: /config
             name: jicofo
+
         - name: jvb
           image: registry.vngcloud.vn/marketplace/jitsi-jvb:4384
           envFrom:
@@ -56,6 +62,35 @@ spec:
           volumeMounts:
           - mountPath: /config
             name: jvb
+
+        - name: jibri
+          image: registry.vngcloud.vn/marketplace/jitsi-jibri:4384
+          securityContext:
+            privileged: true
+            capabilities: 
+              add: ["SYS_ADMIN", "NET_BIND_SERVICE"]
+          envFrom:
+          - configMapRef:
+              name: env
+          env:
+          - name: DISPLAY
+            value: ":0"
+          volumeMounts:
+          - mountPath: /config
+            name: jibri
+          - mountPath: /dev/snd
+            name: dev-snd
+          - mountPath: /dev/shm
+            name: dev-shm
+        
+        - name: exporter
+          image: registry.vngcloud.vn/marketplace/jitsi-exporter:v0.0.4
+          envFrom:
+          - configMapRef:
+              name: env
+          ports:
+          - containerPort: 8080
+
       volumes:
       - name: web
         hostPath:
@@ -81,3 +116,13 @@ spec:
         hostPath:
           path: /opt/jitsi-meet-cfg/jvb
           type: DirectoryOrCreate
+      - name: jibri
+        hostPath:
+          path: /opt/jitsi-meet-cfg/jibri
+          type: DirectoryOrCreate
+      - name: dev-snd
+        hostPath:
+          path: /dev/snd
+      - name: dev-shm
+        hostPath:
+          path: /dev/shm

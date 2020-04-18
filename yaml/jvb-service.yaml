@@ -13,10 +13,5 @@ spec:
     targetPort: 31000
     nodePort: 31000
     name: udp
-  - port: 31443
-    protocol: TCP
-    targetPort: 31443
-    nodePort: 31443
-    name: tcp
   selector:
     k8s-app: jitsi
