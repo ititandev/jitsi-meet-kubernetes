@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  creationTimestamp: "2020-04-18T21:11:17Z"
+  generation: 9
+  labels:
+    prometheus: k8s
+  name: k8s
+  namespace: monitoring
+  resourceVersion: "552976"
+  selfLink: /apis/monitoring.coreos.com/v1/namespaces/monitoring/prometheuses/k8s
+  uid: 81de1a8a-ddd4-4194-8a90-4f1d033a8efc
+spec:
+  additionalScrapeConfigs:
+    key: prometheus-additional.yaml
+    name: additional-scrape-configs
+  alerting:
+    alertmanagers:
+    - name: alertmanager-main
+      namespace: monitoring
+      port: web
+  image: quay.io/prometheus/prometheus:v2.15.2
+  nodeSelector:
+    kubernetes.io/hostname: k8s-master-1
+    kubernetes.io/os: linux
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
+  replicas: 1
+  resources:
+    requests:
+      memory: 400Mi
+  retention: 14d
+  ruleSelector:
+    matchLabels:
+      prometheus: k8s
+      role: alert-rules
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus-k8s
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: manual
+  tolerations:
+  - effect: NoSchedule
+    operator: Exists
+  version: v2.15.2

@@ -1,0 +1,4 @@
+- job_name: "jitsi"
+  static_configs:
+  - targets: ["exporter.jitsi:8080"]
+  - targets: ["10.4.105.4:8080"]
