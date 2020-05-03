@@ -24,6 +24,9 @@ spec:
  metadata:
    name: jitsi
    namespace: jitsi
+   annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
  spec:
   rules:
   - host: meet.vngcloud.tech
